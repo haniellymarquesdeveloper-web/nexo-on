@@ -1,18 +1,20 @@
 from fastapi import FastAPI
-from app.routes.user import router as user_router
-from app.routes.auth import router as auth_router
+from fastapi.middleware.cors import CORSMiddleware
+
 from app.database import engine, Base
 from app.models import user as user_model
-from fastapi.middleware.cors import CORSMiddleware
+from app.models import demanda as demanda_model
+from app.routes.user import router as user_router
+from app.routes.auth import router as auth_router
+from app.routes.demanda import router as demanda_router
+
 
 Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title="Nexo On API")
 
-app = FastAPI(title="Nexo On API")
-
 origins = [
-    "http://localhost:5173",  
+    "http://localhost:5173",
 ]
 
 app.add_middleware(
@@ -25,6 +27,8 @@ app.add_middleware(
 
 app.include_router(user_router)
 app.include_router(auth_router)
+app.include_router(demanda_router)
+
 
 @app.get("/")
 def home():

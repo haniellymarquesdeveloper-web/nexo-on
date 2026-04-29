@@ -5,7 +5,7 @@ from datetime import datetime, timedelta
 import jwt
 from jwt import PyJWTError
 
-from app.schemas.auth import LoginRequest, TokenResponse
+from app.schemas.auth import TokenResponse
 from app.database import SessionLocal
 from app.models.user import User
 from app.services.security import verificar_senha
