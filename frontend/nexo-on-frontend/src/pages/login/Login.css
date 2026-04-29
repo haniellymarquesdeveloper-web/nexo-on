@@ -6,7 +6,7 @@
 
 body {
   font-family: Arial, Helvetica, sans-serif;
-  background-color: #8c80ff;
+  background-color: #f1ebeb;
 }
 
 .login-page {
@@ -34,7 +34,7 @@ body {
 }
 
 .login-card p {
-  color: #3a3a3a;
+  color: #04a0c7;
   margin-bottom: 24px;
 }
 

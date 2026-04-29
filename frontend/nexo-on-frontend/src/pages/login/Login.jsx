@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { API_URL } from "../../services/api";
 import "./Login.css";
 
@@ -7,6 +8,8 @@ export default function Login() {
   const [senha, setSenha] = useState("");
   const [mensagem, setMensagem] = useState("");
   const [loading, setLoading] = useState(false);
+
+  const navigate = useNavigate();
 
   async function handleLogin(e) {
     e.preventDefault();
@@ -33,7 +36,8 @@ export default function Login() {
       }
 
       localStorage.setItem("token", data.access_token);
-      setMensagem("Login realizado com sucesso!");
+      navigate("/dashboard");
+
     } catch (error) {
       setMensagem(error.message);
     } finally {
@@ -45,7 +49,7 @@ export default function Login() {
     <div className="login-page">
       <div className="login-card">
         <h1>Nexo On</h1>
-        <p>Gestão inteligente em tempo real</p>
+        <p>Gestão Inteligente</p>
 
         <form onSubmit={handleLogin} className="login-form">
           <input
