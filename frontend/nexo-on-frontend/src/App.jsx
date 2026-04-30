@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Login from "./pages/login/Login";
 import Dashboard from "./pages/dashboard/Dashboard";
+import Demandas from "./pages/demandas/Demandas";
 
 function PrivateRoute({ children }) {
   const token = localStorage.getItem("token");
@@ -30,6 +31,15 @@ function App() {
           element={
             <PrivateRoute>
               <Dashboard />
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/demandas"
+          element={
+            <PrivateRoute>
+              <Demandas />
             </PrivateRoute>
           }
         />

@@ -28,7 +28,10 @@ def criar_demanda(
         titulo=demanda.titulo,
         descricao=demanda.descricao,
         prioridade=demanda.prioridade,
-        criador_id=usuario.id
+        criador_id=usuario.id,
+        responsavel_id=demanda.responsavel_id,
+        data_inicio=demanda.data_inicio,
+        prazo_conclusao=demanda.prazo_conclusao
     )
 
     db.add(nova_demanda)
@@ -75,6 +78,15 @@ def atualizar_demanda(
 
     if dados.prioridade is not None:
         demanda.prioridade = dados.prioridade
+
+    if dados.responsavel_id is not None:
+        demanda.responsavel_id = dados.responsavel_id
+
+    if dados.data_inicio is not None:
+        demanda.data_inicio = dados.data_inicio
+
+    if dados.prazo_conclusao is not None:
+        demanda.prazo_conclusao = dados.prazo_conclusao
 
     db.commit()
     db.refresh(demanda)

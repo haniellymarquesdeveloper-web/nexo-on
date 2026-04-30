@@ -1,4 +1,5 @@
 from enum import Enum
+from datetime import date
 from pydantic import BaseModel
 
 
@@ -18,6 +19,9 @@ class DemandaCreate(BaseModel):
     titulo: str
     descricao: str
     prioridade: PrioridadeDemandaEnum = PrioridadeDemandaEnum.media
+    responsavel_id: int | None = None
+    data_inicio: date | None = None
+    prazo_conclusao: date | None = None
 
 
 class DemandaUpdate(BaseModel):
@@ -25,6 +29,9 @@ class DemandaUpdate(BaseModel):
     descricao: str | None = None
     status: StatusDemandaEnum | None = None
     prioridade: PrioridadeDemandaEnum | None = None
+    responsavel_id: int | None = None
+    data_inicio: date | None = None
+    prazo_conclusao: date | None = None
 
 
 class DemandaResponse(BaseModel):
@@ -34,6 +41,9 @@ class DemandaResponse(BaseModel):
     status: StatusDemandaEnum
     prioridade: PrioridadeDemandaEnum
     criador_id: int
+    responsavel_id: int | None = None
+    data_inicio: date | None = None
+    prazo_conclusao: date | None = None
 
     class Config:
         from_attributes = True
