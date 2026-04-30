@@ -194,6 +194,7 @@ Serviços planejados:
 ## 👥 Integrantes
 
 * Hanielly Marques
+* Bruno Daniel
 
 ---
 
