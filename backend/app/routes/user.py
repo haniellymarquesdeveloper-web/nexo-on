@@ -16,13 +16,15 @@ def get_db():
     finally:
         db.close()
 
-
 @router.post("/usuarios", response_model=UserResponse)
 def criar_usuario(user: UserCreate, db: Session = Depends(get_db)):
     usuario_existente = db.query(User).filter(User.email == user.email).first()
 
     if usuario_existente:
         raise HTTPException(status_code=400, detail="Este e-mail já está cadastrado.")
+
+    print("SENHA RECEBIDA:", user.senha)
+    print("TAMANHO DA SENHA:", len(user.senha))
 
     novo_usuario = User(
         nome=user.nome,

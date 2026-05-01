@@ -1,0 +1,9 @@
+fastapi
+uvicorn
+sqlalchemy
+psycopg2-binary
+email-validator
+PyJWT
+passlib[bcrypt]
+bcrypt==4.1.2
+python-multipart
