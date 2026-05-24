@@ -1,0 +1,228 @@
+.demandas-page {
+  min-height: 100vh;
+  display: flex;
+  background: linear-gradient(180deg, #0f172a, #020617);
+  color: white;
+}
+
+/* SIDEBAR */
+.sidebar {
+  width: 240px;
+  min-height: 100vh;
+  background: #020617;
+  border-right: 1px solid #1e293b;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  position: fixed;
+  left: 0;
+  top: 0;
+}
+
+.sidebar h2 {
+  color: white;
+  margin-bottom: 32px;
+  font-size: 24px;
+}
+
+.sidebar nav {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.sidebar button {
+  padding: 12px;
+  border: none;
+  border-radius: 10px;
+  background: transparent;
+  color: #cbd5e1;
+  cursor: pointer;
+  text-align: left;
+  transition: 0.2s;
+}
+
+.sidebar button:hover {
+  background: #1e293b;
+  color: white;
+}
+
+.sidebar .active {
+  background: #2563eb;
+  color: white;
+}
+
+.logout {
+  background: #dc2626 !important;
+  color: white !important;
+  text-align: center !important;
+}
+
+.logout:hover {
+  background: #b91c1c !important;
+}
+
+/* CONTEÚDO */
+.demandas-content {
+  flex: 1;
+  margin-left: 240px;
+  padding: 40px;
+}
+
+.demandas-header {
+  margin-bottom: 28px;
+}
+
+.demandas-header h1 {
+  font-size: 36px;
+  color: white;
+  margin-bottom: 8px;
+}
+
+.demandas-header p {
+  color: #94a3b8;
+}
+
+/* FORMULÁRIO */
+.form-card {
+  background: #0f172a;
+  border: 1px solid #1e293b;
+  border-radius: 18px;
+  padding: 32px;
+  max-width: 1000px;
+}
+
+.form-card h2 {
+  color: white;
+  font-size: 26px;
+  margin-bottom: 28px;
+}
+
+.form-demanda {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 22px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.form-group label {
+  color: #e5e7eb;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+  width: 100%;
+  background: #020617;
+  color: white;
+  border: 1px solid #334155;
+  border-radius: 12px;
+  padding: 14px;
+  outline: none;
+  font-size: 14px;
+}
+
+.form-group input::placeholder,
+.form-group textarea::placeholder {
+  color: #64748b;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+  border-color: #2563eb;
+}
+
+.form-group textarea {
+  min-height: 140px;
+  resize: vertical;
+}
+
+.responsaveis-lista {
+  background: #020617;
+  border: 1px solid #334155;
+  border-radius: 12px;
+  padding: 14px;
+  display: grid;
+  gap: 12px;
+  max-height: 180px;
+  overflow-y: auto;
+}
+
+.responsavel-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #cbd5e1;
+  font-size: 14px;
+}
+
+.responsavel-item input {
+  width: auto;
+}
+
+.btn-primary {
+  width: 220px;
+  background: #2563eb;
+  color: white;
+  border: none;
+  padding: 14px;
+  border-radius: 12px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: 0.2s;
+}
+
+.btn-primary:hover {
+  background: #1d4ed8;
+}
+
+.mensagem-form {
+  max-width: 1000px;
+  background: rgba(37, 99, 235, 0.15);
+  border: 1px solid #2563eb;
+  color: #bfdbfe;
+  padding: 12px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+}
+
+/* RESPONSIVO */
+@media (max-width: 900px) {
+  .sidebar {
+    position: static;
+    width: 100%;
+    min-height: auto;
+  }
+
+  .demandas-page {
+    flex-direction: column;
+  }
+
+  .demandas-content {
+    margin-left: 0;
+    padding: 24px;
+  }
+
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .btn-primary {
+    width: 100%;
+  }
+}

@@ -36,7 +36,13 @@ def create_access_token(data: dict, expires_delta: timedelta = None):
         expire = datetime.utcnow() + timedelta(minutes=15)
 
     to_encode.update({"exp": expire})
-    encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
+
+    encoded_jwt = jwt.encode(
+        to_encode,
+        SECRET_KEY,
+        algorithm=ALGORITHM
+    )
+
     return encoded_jwt
 
 
@@ -51,7 +57,12 @@ def get_current_user(
     )
 
     try:
-        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        payload = jwt.decode(
+            token,
+            SECRET_KEY,
+            algorithms=[ALGORITHM]
+        )
+
         email = payload.get("sub")
 
         if email is None:
@@ -69,7 +80,7 @@ def get_current_user(
 
 
 def get_current_admin(usuario: User = Depends(get_current_user)):
-    if usuario.perfil != "admin":
+    if usuario.perfil not in ["admin", "administrador"]:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Acesso negado. Apenas administradores podem acessar esta rota."
@@ -78,8 +89,21 @@ def get_current_admin(usuario: User = Depends(get_current_user)):
     return usuario
 
 
+def get_current_admin_or_gestor(usuario: User = Depends(get_current_user)):
+    if usuario.perfil not in ["admin", "administrador", "gestor"]:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Acesso negado. Apenas administradores ou gestores podem acessar esta rota."
+        )
+
+    return usuario
+
+
 @router.post("/login", response_model=TokenResponse)
-def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
+def login(
+    form_data: OAuth2PasswordRequestForm = Depends(),
+    db: Session = Depends(get_db)
+):
     user = db.query(User).filter(User.email == form_data.username).first()
 
     if not user or not verificar_senha(form_data.password, user.senha):
@@ -90,12 +114,16 @@ def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depend
         )
 
     access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+
     access_token = create_access_token(
         data={"sub": user.email},
         expires_delta=access_token_expires
     )
 
-    return {"access_token": access_token, "token_type": "bearer"}
+    return {
+        "access_token": access_token,
+        "token_type": "bearer"
+    }
 
 
 @router.get("/me")

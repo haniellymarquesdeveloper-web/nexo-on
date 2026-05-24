@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { API_URL } from "../../services/api";
 import "./Login.css";
 
@@ -8,8 +7,6 @@ export default function Login() {
   const [senha, setSenha] = useState("");
   const [mensagem, setMensagem] = useState("");
   const [loading, setLoading] = useState(false);
-
-  const navigate = useNavigate();
 
   async function handleLogin(e) {
     e.preventDefault();
@@ -35,8 +32,9 @@ export default function Login() {
         throw new Error(data.detail || "Erro ao fazer login.");
       }
 
-      localStorage.setItem("token", data.access_token);
-      navigate("/dashboard");
+      localStorage.setItem("access_token", data.access_token);
+
+      window.location.href = "/dashboard";
 
     } catch (error) {
       setMensagem(error.message);
