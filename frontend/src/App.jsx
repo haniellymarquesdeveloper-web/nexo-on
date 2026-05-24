@@ -4,12 +4,12 @@ import Dashboard from "./pages/dashboard/Dashboard";
 import Demandas from "./pages/demandas/Demandas";
 
 function PrivateRoute({ children }) {
-  const token = localStorage.getItem("token");
+  const token = localStorage.getItem("access_token");
   return token ? children : <Navigate to="/" replace />;
 }
 
 function PublicRoute({ children }) {
-  const token = localStorage.getItem("token");
+  const token = localStorage.getItem("access_token");
   return token ? <Navigate to="/dashboard" replace /> : children;
 }
 

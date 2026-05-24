@@ -1,22 +1,27 @@
 .dashboard-page {
   min-height: 100vh;
-  display: flex;
   background: linear-gradient(180deg, #0f172a, #020617);
   color: white;
 }
 
 .sidebar {
   width: 240px;
+  height: 100vh;
   background: #020617;
   border-right: 1px solid #1e293b;
   padding: 24px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  position: fixed;
+  left: 0;
+  top: 0;
 }
 
 .sidebar h2 {
+  color: white;
   margin-bottom: 32px;
+  font-size: 24px;
 }
 
 .sidebar nav {
@@ -48,7 +53,8 @@
 
 .logout {
   background: #dc2626 !important;
-  text-align: center;
+  text-align: center !important;
+  color: white !important;
 }
 
 .logout:hover {
@@ -56,20 +62,34 @@
 }
 
 .dashboard-content {
-  flex: 1;
+  margin-left: 240px;
+  width: calc(100% - 240px);
   padding: 40px;
+  box-sizing: border-box;
+  overflow-x: auto;
 }
 
 .top-bar {
-  margin-bottom: 24px;
+  margin-bottom: 28px;
 }
 
 .top-bar h1 {
-  font-size: 32px;
+  font-size: 36px;
+  margin-bottom: 8px;
+  color: white;
 }
 
 .top-bar p {
   color: #94a3b8;
+}
+
+.erro {
+  background: rgba(220, 38, 38, 0.15);
+  border: 1px solid #dc2626;
+  color: #fecaca;
+  padding: 12px;
+  border-radius: 10px;
+  margin-bottom: 20px;
 }
 
 .stats {
@@ -82,53 +102,167 @@
 .stat-card {
   background: #0f172a;
   border: 1px solid #1e293b;
-  padding: 20px;
-  border-radius: 14px;
+  padding: 24px;
+  border-radius: 16px;
 }
 
 .stat-card h2 {
-  font-size: 26px;
+  font-size: 28px;
+  margin-bottom: 6px;
+  color: white;
 }
 
 .stat-card span {
   color: #94a3b8;
 }
 
-.cards {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 20px;
-}
-
-.card {
+.demandas-section {
   background: #0f172a;
   border: 1px solid #1e293b;
-  padding: 24px;
-  border-radius: 16px;
+  border-radius: 18px;
+  padding: 28px;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.section-header h2 {
+  font-size: 24px;
+  color: white;
+}
+
+.section-header button {
+  background: #2563eb;
+  color: white;
+  border: none;
+  padding: 11px 15px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: 0.2s;
+  font-weight: 600;
+}
+
+.section-header button:hover {
+  background: #1d4ed8;
+}
+
+.table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.demandas-table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 900px;
+}
+
+.demandas-table th,
+.demandas-table td {
+  padding: 14px;
+  border-bottom: 1px solid #1e293b;
+  text-align: left;
+  vertical-align: middle;
+}
+
+.demandas-table th {
+  color: #cbd5e1;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.demandas-table td {
+  color: #e5e7eb;
+  font-size: 14px;
+}
+
+.status {
+  display: inline-block;
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.status.pendente {
+  background: rgba(234, 179, 8, 0.15);
+  color: #fde68a;
+}
+
+.status.em_andamento {
+  background: rgba(37, 99, 235, 0.18);
+  color: #bfdbfe;
+}
+
+.status.concluida {
+  background: rgba(34, 197, 94, 0.18);
+  color: #bbf7d0;
+}
+
+.acoes {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.acoes button {
+  border: none;
+  background: #1e293b;
+  color: white;
+  padding: 8px 10px;
+  border-radius: 8px;
   cursor: pointer;
   transition: 0.2s;
 }
 
-.card:hover {
-  transform: translateY(-4px);
-  border-color: #2563eb;
+.acoes button:hover {
+  background: #334155;
 }
 
-.card h3 {
-  margin-bottom: 10px;
+.acoes .danger {
+  background: #dc2626;
 }
 
-.card p {
-  color: #94a3b8;
+.acoes .danger:hover {
+  background: #b91c1c;
 }
 
+@media (max-width: 900px) {
+  .dashboard-page {
+    display: flex;
+    flex-direction: column;
+  }
 
-@media (max-width: 1000px) {
+  .sidebar {
+    position: static;
+    width: 100%;
+    height: auto;
+    gap: 20px;
+  }
+
+  .dashboard-content {
+    margin-left: 0;
+    width: 100%;
+    padding: 24px;
+  }
+
   .stats {
     grid-template-columns: repeat(2, 1fr);
   }
+}
 
-  .cards {
+@media (max-width: 600px) {
+  .stats {
     grid-template-columns: 1fr;
+  }
+
+  .section-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
   }
 }

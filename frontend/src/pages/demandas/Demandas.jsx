@@ -1,37 +1,30 @@
 import { useEffect, useState } from "react";
-import { API_URL } from "../../services/api";
+import { useNavigate } from "react-router-dom";
 import "./Demandas.css";
 
-export default function Demandas() {
-  const [demandas, setDemandas] = useState([]);
-  const [usuarios, setUsuarios] = useState([]);
+const API_URL = "http://localhost:8000";
 
-  const [titulo, setTitulo] = useState("");
-  const [descricao, setDescricao] = useState("");
-  const [prioridade, setPrioridade] = useState("media");
-  const [responsavelId, setResponsavelId] = useState("");
-  const [dataInicio, setDataInicio] = useState("");
-  const [prazoConclusao, setPrazoConclusao] = useState("");
+export default function Demandas() {
+  const navigate = useNavigate();
+  const token = localStorage.getItem("access_token");
+
+  const [usuarios, setUsuarios] = useState([]);
   const [mensagem, setMensagem] = useState("");
 
-  const token = localStorage.getItem("token");
+  const [form, setForm] = useState({
+    titulo: "",
+    descricao: "",
+    prioridade: "media",
+    responsaveis_ids: [],
+    data_inicio: "",
+    prazo_conclusao: "",
+  });
 
-  async function carregarDemandas() {
-    try {
-      const response = await fetch(`${API_URL}/demandas`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+  useEffect(() => {
+    buscarUsuarios();
+  }, []);
 
-      const data = await response.json();
-      setDemandas(Array.isArray(data) ? data : []);
-    } catch {
-      setMensagem("Erro ao carregar demandas.");
-    }
-  }
-
-  async function carregarUsuarios() {
+  async function buscarUsuarios() {
     try {
       const response = await fetch(`${API_URL}/usuarios`, {
         headers: {
@@ -42,214 +35,190 @@ export default function Demandas() {
       const data = await response.json();
       setUsuarios(Array.isArray(data) ? data : []);
     } catch {
-      setMensagem("Erro ao carregar usuários.");
+      setUsuarios([]);
     }
+  }
+
+  function alternarResponsavel(id) {
+    setForm((prev) => {
+      const jaExiste = prev.responsaveis_ids.includes(id);
+
+      return {
+        ...prev,
+        responsaveis_ids: jaExiste
+          ? prev.responsaveis_ids.filter((item) => item !== id)
+          : [...prev.responsaveis_ids, id],
+      };
+    });
   }
 
   async function criarDemanda(e) {
     e.preventDefault();
     setMensagem("");
 
-    try {
-      const response = await fetch(`${API_URL}/demandas`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          titulo,
-          descricao,
-          prioridade,
-          responsavel_id: responsavelId ? Number(responsavelId) : null,
-          data_inicio: dataInicio || null,
-          prazo_conclusao: prazoConclusao || null,
-        }),
-      });
+    const payload = {
+      titulo: form.titulo,
+      descricao: form.descricao,
+      prioridade: form.prioridade,
+      responsaveis_ids: form.responsaveis_ids,
+      data_inicio: form.data_inicio || null,
+      prazo_conclusao: form.prazo_conclusao || null,
+    };
 
-      const data = await response.json();
+    const response = await fetch(`${API_URL}/demandas`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(payload),
+    });
 
-      if (!response.ok) {
-        throw new Error(data.detail || "Erro ao criar demanda.");
-      }
+    const data = await response.json();
 
-      setTitulo("");
-      setDescricao("");
-      setPrioridade("media");
-      setResponsavelId("");
-      setDataInicio("");
-      setPrazoConclusao("");
-      setMensagem("Demanda criada com sucesso!");
-      carregarDemandas();
-    } catch (error) {
-      setMensagem(error.message);
+    if (!response.ok) {
+      setMensagem(data.detail || "Erro ao criar demanda.");
+      return;
     }
+
+    setMensagem("Demanda criada com sucesso!");
+
+    setForm({
+      titulo: "",
+      descricao: "",
+      prioridade: "media",
+      responsaveis_ids: [],
+      data_inicio: "",
+      prazo_conclusao: "",
+    });
   }
 
-  function buscarNomeResponsavel(id) {
-    const usuario = usuarios.find((user) => user.id === id);
-    return usuario ? usuario.nome : "Não atribuído";
+  function handleLogout() {
+    localStorage.removeItem("access_token");
+    window.location.href = "/";
   }
-
-  function formatarStatus(status) {
-    if (status === "em_andamento") return "Em andamento";
-    if (status === "concluida") return "Concluída";
-    return "Pendente";
-  }
-
-  function formatarPrioridade(prioridade) {
-    if (prioridade === "alta") return "Alta";
-    if (prioridade === "baixa") return "Baixa";
-    return "Média";
-  }
-
-  function classeStatus(status) {
-    if (status === "em_andamento") return "andamento";
-    if (status === "concluida") return "concluida";
-    return "pendente";
-  }
-
-  useEffect(() => {
-    carregarDemandas();
-    carregarUsuarios();
-  }, []);
 
   return (
     <div className="demandas-page">
-      <div className="top-bar">
+      <aside className="sidebar">
         <div>
-          <h1>Demandas</h1>
-          <p>Gerencie as demandas internas do Nexo On.</p>
+          <h2>Nexo On</h2>
+
+          <nav>
+            <button onClick={() => navigate("/dashboard")}>Dashboard</button>
+            <button className="active">Criar Demandas</button>
+            <button>Usuários</button>
+          </nav>
         </div>
 
-        <button className="btn-nova">+ Nova demanda</button>
-      </div>
-
-      <div className="stats">
-        <div className="stat-card">
-          <h2>{demandas.length}</h2>
-          <span>Total de demandas</span>
-        </div>
-
-        <div className="stat-card">
-          <h2>{demandas.filter((d) => d.status === "pendente").length}</h2>
-          <span>Pendentes</span>
-        </div>
-
-        <div className="stat-card">
-          <h2>{demandas.filter((d) => d.status === "em_andamento").length}</h2>
-          <span>Em andamento</span>
-        </div>
-
-        <div className="stat-card">
-          <h2>{demandas.filter((d) => d.status === "concluida").length}</h2>
-          <span>Concluídas</span>
-        </div>
-      </div>
-
-      <form className="demanda-form" onSubmit={criarDemanda}>
-        <h2>Criar nova demanda</h2>
-
-        <div className="form-grid">
-          <div className="campo">
-            <label>Título da demanda</label>
-            <input
-              type="text"
-              placeholder="Digite o título da demanda"
-              value={titulo}
-              onChange={(e) => setTitulo(e.target.value)}
-              required
-            />
-          </div>
-
-          <div className="campo">
-            <label>Prioridade</label>
-            <select
-              value={prioridade}
-              onChange={(e) => setPrioridade(e.target.value)}
-            >
-              <option value="baixa">Baixa</option>
-              <option value="media">Média</option>
-              <option value="alta">Alta</option>
-            </select>
-          </div>
-
-          <div className="campo">
-            <label>Responsável</label>
-            <select
-              value={responsavelId}
-              onChange={(e) => setResponsavelId(e.target.value)}
-            >
-              <option value="">Selecione um responsável</option>
-              {usuarios.map((usuario) => (
-                <option key={usuario.id} value={usuario.id}>
-                  {usuario.nome} - {usuario.perfil}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          <div className="campo">
-            <label>Data de início</label>
-            <input
-              type="date"
-              value={dataInicio}
-              onChange={(e) => setDataInicio(e.target.value)}
-            />
-          </div>
-
-          <div className="campo descricao-campo">
-            <label>Descrição da demanda</label>
-            <textarea
-              placeholder="Descreva a demanda com mais detalhes..."
-              value={descricao}
-              onChange={(e) => setDescricao(e.target.value)}
-              required
-            />
-          </div>
-
-          <div className="campo">
-            <label>Prazo de conclusão</label>
-            <input
-              type="date"
-              value={prazoConclusao}
-              onChange={(e) => setPrazoConclusao(e.target.value)}
-            />
-          </div>
-        </div>
-
-        <button type="submit" className="btn-criar">
-          Criar demanda
+        <button className="logout" onClick={handleLogout}>
+          Sair
         </button>
-      </form>
+      </aside>
 
-      {mensagem && <p className="mensagem-demanda">{mensagem}</p>}
+      <main className="demandas-content">
+        <section className="demandas-header">
+          <div>
+            <h1>Criar Demandas</h1>
+            <p>Cadastre uma nova demanda e atribua aos usuários responsáveis.</p>
+          </div>
+        </section>
 
-      <div className="lista-header">
-        <h2>Demandas cadastradas</h2>
-      </div>
+        {mensagem && <p className="mensagem-form">{mensagem}</p>}
 
-      <div className="demandas-lista">
-        {demandas.map((demanda) => (
-          <div className="demanda-card" key={demanda.id}>
-            <span className={`badge ${classeStatus(demanda.status)}`}>
-              {formatarStatus(demanda.status)}
-            </span>
+        <section className="form-card">
+          <h2>Nova demanda</h2>
 
-            <h3>{demanda.titulo}</h3>
-            <p>{demanda.descricao}</p>
+          <form onSubmit={criarDemanda} className="form-demanda">
+            <div className="form-grid">
+              <div className="form-group">
+                <label>Título da demanda</label>
+                <input
+                  placeholder="Digite o título da demanda"
+                  value={form.titulo}
+                  onChange={(e) =>
+                    setForm({ ...form, titulo: e.target.value })
+                  }
+                  required
+                />
+              </div>
 
-            <div className="demanda-info">
-              <span>Prioridade: {formatarPrioridade(demanda.prioridade)}</span>
-              <span>Responsável: {buscarNomeResponsavel(demanda.responsavel_id)}</span>
-              <span>Início: {demanda.data_inicio || "Não informado"}</span>
-              <span>Prazo: {demanda.prazo_conclusao || "Não informado"}</span>
+              <div className="form-group">
+                <label>Prioridade</label>
+                <select
+                  value={form.prioridade}
+                  onChange={(e) =>
+                    setForm({ ...form, prioridade: e.target.value })
+                  }
+                >
+                  <option value="baixa">Baixa</option>
+                  <option value="media">Média</option>
+                  <option value="alta">Alta</option>
+                </select>
+              </div>
+
+              <div className="form-group">
+                <label>Data de início</label>
+                <input
+                  type="date"
+                  value={form.data_inicio}
+                  onChange={(e) =>
+                    setForm({ ...form, data_inicio: e.target.value })
+                  }
+                />
+              </div>
+
+              <div className="form-group">
+                <label>Prazo de conclusão</label>
+                <input
+                  type="date"
+                  value={form.prazo_conclusao}
+                  onChange={(e) =>
+                    setForm({ ...form, prazo_conclusao: e.target.value })
+                  }
+                />
+              </div>
             </div>
 
-            <button className="btn-detalhes">Ver detalhes</button>
-          </div>
-        ))}
-      </div>
+            <div className="form-group">
+              <label>Descrição da demanda</label>
+              <textarea
+                placeholder="Descreva a demanda com mais detalhes..."
+                value={form.descricao}
+                onChange={(e) =>
+                  setForm({ ...form, descricao: e.target.value })
+                }
+                required
+              />
+            </div>
+
+            <div className="form-group">
+              <label>Usuários atribuídos</label>
+
+              <div className="responsaveis-lista">
+                {usuarios.length === 0 ? (
+                  <p>Nenhum usuário encontrado.</p>
+                ) : (
+                  usuarios.map((usuario) => (
+                    <label key={usuario.id} className="responsavel-item">
+                      <input
+                        type="checkbox"
+                        checked={form.responsaveis_ids.includes(usuario.id)}
+                        onChange={() => alternarResponsavel(usuario.id)}
+                      />
+                      {usuario.nome} — {usuario.email}
+                    </label>
+                  ))
+                )}
+              </div>
+            </div>
+
+            <button type="submit" className="btn-primary">
+              Criar demanda
+            </button>
+          </form>
+        </section>
+      </main>
     </div>
   );
 }
