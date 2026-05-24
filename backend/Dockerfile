@@ -10,10 +10,10 @@ RUN apt-get update \
     && rm -rf /var/lib/apt/lists/* \
     && useradd -m -u 1000 appuser
 
-COPY requirements.lock .
+COPY requirements.txt .
 
 RUN python -m pip install --upgrade pip \
-    && pip install --no-cache-dir -r requirements.lock
+ && pip install --no-cache-dir -r requirements.txt
 
 COPY . .
 

@@ -1,28 +1,79 @@
+version: '3.9'
+
 services:
   backend:
     build: ./backend
+    container_name: nexo_backend
     ports:
       - "8000:8000"
+
     depends_on:
-      - db
+      db:
+        condition: service_healthy
+
+    restart: unless-stopped
+
+    environment:
+      DATABASE_URL: postgresql://${DB_USER}:${DB_PASSWORD}@db:5432/${DB_NAME}
+      ENVIRONMENT: production
+
+    networks:
+      - nexo_network
+
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/docs"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
 
   frontend:
     build: ./frontend
+    container_name: nexo_frontend
     ports:
       - "3000:5173"
+
     depends_on:
       - backend
 
-  db:
-    image: postgres:15
+    restart: unless-stopped
+
     environment:
-      POSTGRES_USER: user
-      POSTGRES_PASSWORD: password
-      POSTGRES_DB: nexo
+      VITE_API_URL: http://localhost:8000
+
+    networks:
+      - nexo_network
+
+  db:
+    image: postgres:15-alpine
+    container_name: nexo_db
+
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+
     ports:
       - "5432:5432"
+
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
+    restart: unless-stopped
+
+    networks:
+      - nexo_network
+
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
 volumes:
   postgres_data:
+    driver: local
+
+networks:
+  nexo_network:
+    driver: bridge
