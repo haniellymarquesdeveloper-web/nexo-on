@@ -10,7 +10,7 @@ RUN apt-get update \
 COPY requirements.txt .
 
 RUN python -m pip install --upgrade pip \
-    && pip install --no-cache-dir -r requirements.txt
+    && pip install --no-cache-dir --requirement requirements.txt --only-binary=:all:
 
 COPY . .
 
