@@ -1,7 +1,8 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
+
 from app.schemas.user import UserCreate, UserResponse, UserPerfilUpdate, UserUpdate
-from app.routes.auth import get_current_admin
+from app.routes.auth import get_current_admin, get_current_admin_or_gestor
 from app.database import SessionLocal
 from app.models.user import User
 from app.services.security import gerar_hash_senha
@@ -16,15 +17,13 @@ def get_db():
     finally:
         db.close()
 
+
 @router.post("/usuarios", response_model=UserResponse)
 def criar_usuario(user: UserCreate, db: Session = Depends(get_db)):
     usuario_existente = db.query(User).filter(User.email == user.email).first()
 
     if usuario_existente:
         raise HTTPException(status_code=400, detail="Este e-mail já está cadastrado.")
-
-    print("SENHA RECEBIDA:", user.senha)
-    print("TAMANHO DA SENHA:", len(user.senha))
 
     novo_usuario = User(
         nome=user.nome,
@@ -38,6 +37,14 @@ def criar_usuario(user: UserCreate, db: Session = Depends(get_db)):
     db.refresh(novo_usuario)
 
     return novo_usuario
+
+
+@router.get("/usuarios", response_model=list[UserResponse])
+def listar_usuarios(
+    db: Session = Depends(get_db),
+    usuario_logado: User = Depends(get_current_admin_or_gestor)
+):
+    return db.query(User).all()
 
 
 @router.patch("/usuarios/{usuario_id}/perfil", response_model=UserResponse)
@@ -59,12 +66,6 @@ def atualizar_perfil(
 
     return usuario
 
-@router.get("/usuarios", response_model=list[UserResponse])
-def listar_usuarios(
-    db: Session = Depends(get_db),
-    admin: User = Depends(get_current_admin)
-):
-    return db.query(User).all()
 
 @router.put("/usuarios/{usuario_id}", response_model=UserResponse)
 def atualizar_usuario(
@@ -85,6 +86,7 @@ def atualizar_usuario(
     db.refresh(usuario)
 
     return usuario
+
 
 @router.delete("/usuarios/{usuario_id}")
 def deletar_usuario(
