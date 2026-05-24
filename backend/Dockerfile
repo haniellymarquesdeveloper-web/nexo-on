@@ -6,7 +6,7 @@ RUN apt-get update && apt-get install -y netcat-openbsd
 
 COPY requirements.txt .
 
-RUN pip install -r requirements.txt
+RUN pip install --no-cache-dir --only-binary=:all: -r requirements.txt
 
 COPY . .
 

@@ -1,9 +1,7 @@
-fastapi
-uvicorn
-sqlalchemy
-psycopg2-binary
-email-validator
-PyJWT
-passlib[bcrypt]
-bcrypt==4.1.2
-python-multipart
+fastapi==0.115.0
+uvicorn==0.30.6
+sqlalchemy==2.0.35
+psycopg2-binary==2.9.9
+passlib[bcrypt]==1.7.4
+PyJWT==2.9.0
+python-multipart==0.0.12
