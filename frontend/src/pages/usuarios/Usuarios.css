@@ -1,0 +1,107 @@
+.usuarios-container {
+  min-height: 100vh;
+  display: flex;
+  background: linear-gradient(180deg, #0f172a, #020617);
+  color: white;
+}
+
+.usuarios-content {
+  flex: 1;
+  margin-left: 240px;
+  padding: 40px;
+}
+
+.usuarios-header {
+  margin-bottom: 28px;
+}
+
+.usuarios-header h1 {
+  font-size: 36px;
+  color: white;
+  margin-bottom: 8px;
+}
+
+.usuarios-header p {
+  color: #94a3b8;
+}
+
+.usuarios-card {
+  background: #0f172a;
+  border: 1px solid #1e293b;
+  border-radius: 18px;
+  padding: 28px;
+  width: 100%;
+}
+
+.usuarios-table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.usuarios-card table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 800px;
+}
+
+.usuarios-card th,
+.usuarios-card td {
+  padding: 16px 14px;
+  border-bottom: 1px solid #1e293b;
+  text-align: left;
+}
+
+.usuarios-card th {
+  color: #cbd5e1;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.usuarios-card td {
+  color: #e5e7eb;
+  font-size: 14px;
+}
+
+.perfil {
+  display: inline-block;
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.perfil.admin,
+.perfil.administrador {
+  background: rgba(37, 99, 235, 0.18);
+  color: #bfdbfe;
+}
+
+.perfil.gestor {
+  background: rgba(147, 51, 234, 0.18);
+  color: #e9d5ff;
+}
+
+.perfil.colaborador {
+  background: rgba(34, 197, 94, 0.18);
+  color: #bbf7d0;
+}
+
+.usuarios-erro {
+  background: rgba(220, 38, 38, 0.15);
+  border: 1px solid #dc2626;
+  color: #fecaca;
+  padding: 12px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+}
+
+@media (max-width: 900px) {
+  .usuarios-container {
+    flex-direction: column;
+  }
+
+  .usuarios-content {
+    margin-left: 0;
+    padding: 24px;
+  }
+}

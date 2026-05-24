@@ -82,7 +82,9 @@ export default function Dashboard() {
   }
 
   async function excluirDemanda(id) {
-    const confirmar = window.confirm("Tem certeza que deseja excluir esta demanda?");
+    const confirmar = window.confirm(
+      "Tem certeza que deseja excluir esta demanda?"
+    );
 
     if (!confirmar) return;
 
@@ -103,6 +105,8 @@ export default function Dashboard() {
 
   function handleLogout() {
     localStorage.removeItem("access_token");
+    localStorage.removeItem("usuario");
+
     window.location.href = "/";
   }
 
@@ -118,9 +122,18 @@ export default function Dashboard() {
     perfil === "administrador";
 
   const totalDemandas = demandas.length;
-  const pendentes = demandas.filter((d) => d.status === "pendente").length;
-  const emAndamento = demandas.filter((d) => d.status === "em_andamento").length;
-  const concluidas = demandas.filter((d) => d.status === "concluida").length;
+
+  const pendentes = demandas.filter(
+    (d) => d.status === "pendente"
+  ).length;
+
+  const emAndamento = demandas.filter(
+    (d) => d.status === "em_andamento"
+  ).length;
+
+  const concluidas = demandas.filter(
+    (d) => d.status === "concluida"
+  ).length;
 
   return (
     <div className="dashboard-page">
@@ -129,9 +142,19 @@ export default function Dashboard() {
           <h2>Nexo On</h2>
 
           <nav>
-            <button className="active">Dashboard</button>
-            <button onClick={() => navigate("/demandas")}>Criar Demandas</button>
-            <button>Usuários</button>
+            <button className="active">
+              Dashboard
+            </button>
+
+            <button onClick={() => navigate("/demandas")}>
+              Criar Demandas
+            </button>
+
+            {podeGerenciar && (
+              <button onClick={() => navigate("/usuarios")}>
+                Usuários
+              </button>
+            )}
           </nav>
         </div>
 
@@ -144,9 +167,13 @@ export default function Dashboard() {
         <section className="top-bar">
           <div>
             <h1>Dashboard</h1>
+
             <p>
-              Bem-vinda, {usuario?.nome || "usuário"} — perfil:{" "}
-              <strong>{usuario?.perfil || "não identificado"}</strong>
+              Bem-vinda, {usuario?.nome || "usuário"} —
+              perfil:{" "}
+              <strong>
+                {usuario?.perfil || "não identificado"}
+              </strong>
             </p>
           </div>
         </section>
@@ -202,33 +229,56 @@ export default function Dashboard() {
               <tbody>
                 {demandas.length === 0 ? (
                   <tr>
-                    <td colSpan="6">Nenhuma demanda encontrada.</td>
+                    <td colSpan="6">
+                      Nenhuma demanda encontrada.
+                    </td>
                   </tr>
                 ) : (
                   demandas.map((demanda) => (
                     <tr key={demanda.id}>
                       <td>{demanda.titulo}</td>
+
                       <td>{demanda.prioridade}</td>
+
                       <td>
-                        <span className={`status ${demanda.status}`}>
+                        <span
+                          className={`status ${demanda.status}`}
+                        >
                           {demanda.status}
                         </span>
                       </td>
+
                       <td>
                         {demanda.responsaveis?.length > 0
-                          ? demanda.responsaveis.map((u) => u.nome).join(", ")
+                          ? demanda.responsaveis
+                              .map((u) => u.nome)
+                              .join(", ")
                           : "Sem responsável"}
                       </td>
-                      <td>{demanda.prazo_conclusao || "Sem prazo"}</td>
+
+                      <td>
+                        {demanda.prazo_conclusao ||
+                          "Sem prazo"}
+                      </td>
+
                       <td className="acoes">
-                        {podeGerenciar && demanda.status !== "concluida" && (
-                          <button onClick={() => concluirDemanda(demanda.id)}>
-                            Concluir
-                          </button>
-                        )}
+                        {podeGerenciar &&
+                          demanda.status !== "concluida" && (
+                            <button
+                              onClick={() =>
+                                concluirDemanda(demanda.id)
+                              }
+                            >
+                              Concluir
+                            </button>
+                          )}
 
                         {podeGerenciar && (
-                          <button onClick={() => navigate("/demandas")}>
+                          <button
+                            onClick={() =>
+                              navigate("/demandas")
+                            }
+                          >
                             Editar
                           </button>
                         )}
@@ -236,7 +286,9 @@ export default function Dashboard() {
                         {podeExcluir && (
                           <button
                             className="danger"
-                            onClick={() => excluirDemanda(demanda.id)}
+                            onClick={() =>
+                              excluirDemanda(demanda.id)
+                            }
                           >
                             Excluir
                           </button>
