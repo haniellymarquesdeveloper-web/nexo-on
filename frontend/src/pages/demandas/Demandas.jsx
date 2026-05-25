@@ -65,36 +65,42 @@ export default function Demandas() {
       prazo_conclusao: form.prazo_conclusao || null,
     };
 
-    const response = await fetch(`${API_URL}/demandas`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify(payload),
-    });
+    try {
+      const response = await fetch(`${API_URL}/demandas`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(payload),
+      });
 
-    const data = await response.json();
+      const data = await response.json();
 
-    if (!response.ok) {
-      setMensagem(data.detail || "Erro ao criar demanda.");
-      return;
+      if (!response.ok) {
+        setMensagem(data.detail || "Erro ao criar demanda.");
+        return;
+      }
+
+      setMensagem("Demanda criada com sucesso!");
+
+      setForm({
+        titulo: "",
+        descricao: "",
+        prioridade: "media",
+        responsaveis_ids: [],
+        data_inicio: "",
+        prazo_conclusao: "",
+      });
+
+    } catch {
+      setMensagem("Erro ao conectar com o servidor.");
     }
-
-    setMensagem("Demanda criada com sucesso!");
-
-    setForm({
-      titulo: "",
-      descricao: "",
-      prioridade: "media",
-      responsaveis_ids: [],
-      data_inicio: "",
-      prazo_conclusao: "",
-    });
   }
 
   function handleLogout() {
     localStorage.removeItem("access_token");
+    localStorage.removeItem("usuario");
     window.location.href = "/";
   }
 
@@ -105,9 +111,17 @@ export default function Demandas() {
           <h2>Nexo On</h2>
 
           <nav>
-            <button onClick={() => navigate("/dashboard")}>Dashboard</button>
-            <button className="active">Criar Demandas</button>
-            <button>Usuários</button>
+            <button onClick={() => navigate("/dashboard")}>
+              Dashboard
+            </button>
+
+            <button className="active">
+              Criar Demandas
+            </button>
+
+            <button onClick={() => navigate("/usuarios")}>
+              Usuários
+            </button>
           </nav>
         </div>
 
@@ -120,24 +134,37 @@ export default function Demandas() {
         <section className="demandas-header">
           <div>
             <h1>Criar Demandas</h1>
-            <p>Cadastre uma nova demanda e atribua aos usuários responsáveis.</p>
+            <p>
+              Cadastre uma nova demanda e atribua aos usuários responsáveis.
+            </p>
           </div>
         </section>
 
-        {mensagem && <p className="mensagem-form">{mensagem}</p>}
+        {mensagem && (
+          <p className="mensagem-form">
+            {mensagem}
+          </p>
+        )}
 
         <section className="form-card">
           <h2>Nova demanda</h2>
 
           <form onSubmit={criarDemanda} className="form-demanda">
+
             <div className="form-grid">
+
               <div className="form-group">
                 <label>Título da demanda</label>
+
                 <input
+                  type="text"
                   placeholder="Digite o título da demanda"
                   value={form.titulo}
                   onChange={(e) =>
-                    setForm({ ...form, titulo: e.target.value })
+                    setForm({
+                      ...form,
+                      titulo: e.target.value,
+                    })
                   }
                   required
                 />
@@ -145,10 +172,14 @@ export default function Demandas() {
 
               <div className="form-group">
                 <label>Prioridade</label>
+
                 <select
                   value={form.prioridade}
                   onChange={(e) =>
-                    setForm({ ...form, prioridade: e.target.value })
+                    setForm({
+                      ...form,
+                      prioridade: e.target.value,
+                    })
                   }
                 >
                   <option value="baixa">Baixa</option>
@@ -159,34 +190,47 @@ export default function Demandas() {
 
               <div className="form-group">
                 <label>Data de início</label>
+
                 <input
                   type="date"
                   value={form.data_inicio}
                   onChange={(e) =>
-                    setForm({ ...form, data_inicio: e.target.value })
+                    setForm({
+                      ...form,
+                      data_inicio: e.target.value,
+                    })
                   }
                 />
               </div>
 
               <div className="form-group">
                 <label>Prazo de conclusão</label>
+
                 <input
                   type="date"
                   value={form.prazo_conclusao}
                   onChange={(e) =>
-                    setForm({ ...form, prazo_conclusao: e.target.value })
+                    setForm({
+                      ...form,
+                      prazo_conclusao: e.target.value,
+                    })
                   }
                 />
               </div>
+
             </div>
 
             <div className="form-group">
               <label>Descrição da demanda</label>
+
               <textarea
                 placeholder="Descreva a demanda com mais detalhes..."
                 value={form.descricao}
                 onChange={(e) =>
-                  setForm({ ...form, descricao: e.target.value })
+                  setForm({
+                    ...form,
+                    descricao: e.target.value,
+                  })
                 }
                 required
               />
@@ -196,26 +240,35 @@ export default function Demandas() {
               <label>Usuários atribuídos</label>
 
               <div className="responsaveis-lista">
+
                 {usuarios.length === 0 ? (
                   <p>Nenhum usuário encontrado.</p>
                 ) : (
                   usuarios.map((usuario) => (
-                    <label key={usuario.id} className="responsavel-item">
+                    <label
+                      key={usuario.id}
+                      className="responsavel-item"
+                    >
                       <input
                         type="checkbox"
                         checked={form.responsaveis_ids.includes(usuario.id)}
-                        onChange={() => alternarResponsavel(usuario.id)}
+                        onChange={() =>
+                          alternarResponsavel(usuario.id)
+                        }
                       />
+
                       {usuario.nome} — {usuario.email}
                     </label>
                   ))
                 )}
+
               </div>
             </div>
 
             <button type="submit" className="btn-primary">
               Criar demanda
             </button>
+
           </form>
         </section>
       </main>
