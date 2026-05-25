@@ -2,47 +2,57 @@
 
 📌 Sobre o Projeto
 
-O Nexo On é uma aplicação web full stack desenvolvida para auxiliar no gerenciamento de demandas internas de uma organização. O sistema permite o controle de usuários, autenticação com diferentes níveis de acesso e gerenciamento de tarefas, proporcionando uma administração centralizada, organizada e eficiente.
+O Nexo On é uma aplicação web full stack desenvolvida para auxiliar no gerenciamento de demandas internas de uma organização. O sistema permite controle de usuários, autenticação com diferentes níveis de acesso e gerenciamento de tarefas, proporcionando uma administração centralizada, organizada e eficiente.
 
-A aplicação foi construída com foco em práticas modernas de desenvolvimento web e DevOps, integrando frontend, backend e banco de dados em uma arquitetura conteinerizada com Docker.
+O projeto foi desenvolvido com foco na aplicação prática de conceitos de desenvolvimento web e DevOps, integrando frontend, backend e banco de dados em uma arquitetura conteinerizada com Docker.
 
-🔗 Repositório oficial:
-Nexo On - GitHub
+🔗 Repositório Oficial:
+https://github.com/haniellymarquesdeveloper-web/nexo-on.git
 
 🎯 Objetivo
 
-O principal objetivo do projeto é aplicar, de forma prática, conceitos relacionados ao desenvolvimento full stack e à cultura DevOps, incluindo:
+O principal objetivo do projeto é aplicar conceitos relacionados a:
 
-versionamento de código;
-organização de branches;
-conteinerização com Docker;
-orquestração de serviços com Docker Compose;
-desenvolvimento de API REST;
-autenticação segura com JWT;
-integração entre frontend, backend e banco de dados;
-automação de pipeline com GitHub Actions;
-análise de qualidade de software com SonarCloud.
+Desenvolvimento Full Stack;
+Versionamento de código;
+Organização de branches;
+Conteinerização com Docker;
+Orquestração de serviços com Docker Compose;
+Desenvolvimento de API REST;
+Autenticação com JWT;
+Integração entre frontend, backend e banco de dados;
+Pipeline com GitHub Actions;
+Análise de qualidade com SonarCloud.
+--------------------------------------------------------------------------------------------------------------------------------------
 🛠️ Tecnologias Utilizadas
+
 🎨 Front-end
 React
 Vite
-CSS3
 JavaScript
+CSS3
+
 ⚙️ Back-end
 Python
 FastAPI
 SQLAlchemy
 JWT Authentication
 Uvicorn
+
 🗄️ Banco de Dados
 PostgreSQL
+
 🐳 DevOps
 Docker
 Docker Compose
 GitHub Actions
 SonarCloud
 Git/GitHub
+
+------------------------------------------------------------------------------------------------------------------------------------------
+
 📂 Estrutura do Projeto
+
 nexo-on/
 │
 ├── backend/
@@ -65,20 +75,25 @@ nexo-on/
 ├── docker-compose.yml
 ├── sonar-project.properties
 └── README.md
+
+-----------------------------------------------------------------------------------------------------------------------------------------
 ⚙️ Funcionalidades
-🔐 Sistema de Autenticação
-Login utilizando JWT;
+
+🔐 Autenticação
+Login com JWT;
 Controle de acesso por perfil;
 Rotas protegidas;
-Persistência de autenticação.
+Persistência de autenticação.  
+------------------------------------------------------------------------------------------------------------------------------------------
 👤 Gerenciamento de Usuários
+
 Criar usuários;
 Listar usuários;
 Editar usuários;
-Alterar perfil de acesso;
+Alterar perfil;
 Excluir usuários;
 Controle administrativo.
-
+------------------------------------------------------------------------------------------------------------------------------------------
 📋 Gerenciamento de Demandas
 
 Criar demandas;
@@ -87,99 +102,93 @@ Atualizar demandas;
 Excluir demandas;
 Definir prioridade;
 Atribuir responsáveis;
-Controle de status das tarefas.
-
+Controle de status.
+------------------------------------------------------------------------------------------------------------------------------------------
 📊 Dashboard
 
 Visualização de métricas;
-Quantidade de demandas;
 Demandas pendentes;
 Demandas concluídas;
-Interface centralizada de gerenciamento.
-
-🐳 Conteinerização da Aplicação
+Informações centralizadas da aplicação.
+------------------------------------------------------------------------------------------------------------------------------------------
+🐳 Conteinerização
 
 A aplicação utiliza Docker para execução isolada dos serviços e Docker Compose para orquestração completa do ambiente.
 
 Serviços configurados:
 Frontend;
 Backend;
-Banco de dados PostgreSQL.
+PostgreSQL.
+-----------------------------------------------------------------------------------------------------------------------------------------
 ▶️ Como Executar o Projeto
+
 📌 Pré-requisitos
 
 Antes de começar, instale:
 
 Docker Desktop
 Git
+------------------------------------------------------------------------------------------------------------------------------------------
 📥 1. Clonar o Repositório
+
 git clone https://github.com/haniellymarquesdeveloper-web/nexo-on.git
 
 cd nexo-on
+
 🚀 2. Executar o Projeto
 
-Na raiz do projeto, execute:
+Na raiz do projeto: docker compose up --build
 
-docker compose up --build
 🌐 3. Acessar os Serviços
-Serviço	URL
-Frontend	http://localhost:3000
-Backend	http://localhost:8000
-Swagger/OpenAPI	http://localhost:8000/docs
-👤 4. Criar um Usuário
 
-Acesse a documentação da API:
+Frontend: http://localhost:3000
+Backend: http://localhost:8000
+Swagger: http://localhost:8000/docs
 
-http://localhost:8000/docs
+------------------------------------------------------------------------------------------------------------------------------------------
+👤 4. Criar Usuário
 
-Utilize o endpoint de criação de usuários para cadastrar um novo usuário no sistema.
+Acesse: http://localhost:8000/docs
 
+------------------------------------------------------------------------------------------------------------------------------------------
 🔑 5. Tornar Usuário Administrador
 
-Acesse o terminal do banco:
+Abra o terminal do banco: docker compose exec db psql -U user -d nexo
 
-docker compose exec db psql -U user -d nexo
-
-Execute o comando SQL:
+E execute: 
 
 UPDATE usuarios
 SET perfil = 'admin'
 WHERE email = 'administrador@gmail.com';
 
-Sair do terminal:
+Para sair do banco: \q
 
-\q
-
+------------------------------------------------------------------------------------------------------------------------------------------
 🔐 6. Realizar Login
 
 Após configurar o usuário administrador, será possível:
 
-acessar o sistema;
-visualizar o dashboard;
+acessar o dashboard;
 gerenciar usuários;
 gerenciar demandas;
 utilizar funcionalidades administrativas.
+
+------------------------------------------------------------------------------------------------------------------------------------------
 🌿 Estratégia de Branches
 
 O projeto utiliza uma organização baseada em GitFlow simplificado:
 
-Branch	Finalidade
-main	versão estável
-develop	integração de funcionalidades
-feature/*	desenvolvimento de novas funcionalidades
+main: versão estável
+develop: integração de funcionalidades
+feature/*: novas funcionalidades
+------------------------------------------------------------------------------------------------------------------------------------------
 🔄 Pipeline e Qualidade de Código
 
-O projeto possui integração contínua utilizando:
+✅ GitHub Actions: Responsável pela automação da pipeline e validações do projeto.
+✅ SonarCloud: Responsável pela análise de qualidade, vulnerabilidades e identificação de bugs.
 
-✅ GitHub Actions
-
-Responsável pela automação de verificações e integração contínua do projeto.
-
-✅ SonarCloud
-
-Responsável pela análise da qualidade do código, identificação de vulnerabilidades, bugs e problemas de manutenção.
-
-📌 Requisitos Atendidos
+------------------------------------------------------------------------------------------------------------------------------------------
+📌 Requisitos Atendidos:
 
 ✅ Front-end integrado;
 ✅ Back-end integrado;
@@ -192,12 +201,39 @@ Responsável pela análise da qualidade do código, identificação de vulnerabi
 ✅ Pipeline com GitHub Actions;
 ✅ Integração com SonarCloud.
 
+------------------------------------------------------------------------------------------------------------------------------------------
 👥 Integrantes
-Hanielly Silva Marques
-Bruno Daniel de Andrade Pereira
+
+-> Hanielly Silva Marques
+-> Bruno Daniel de Andrade Pereira
+
+------------------------------------------------------------------------------------------------------------------------------------------
 
 📚 Considerações Finais
 
 O Nexo On foi desenvolvido como projeto acadêmico com foco na aplicação prática de conceitos de desenvolvimento full stack e DevOps.
 
-Além do desenvolvimento da aplicação funcional, o projeto buscou aplicar boas práticas relacionadas à organização de código, conteinerização, integração contínua, qualidade de software e versionamento colaborativo.
+O sistema busca demonstrar a integração entre frontend, backend, banco de dados, conteinerização, versionamento, automação e qualidade de software em uma aplicação funcional e organizada.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
