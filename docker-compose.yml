@@ -1,48 +1,6 @@
 version: '3.9'
 
 services:
-  backend:
-    build: ./backend
-    container_name: nexo_backend
-    ports:
-      - "8000:8000"
-
-    depends_on:
-      db:
-        condition: service_healthy
-
-    restart: unless-stopped
-
-    environment:
-      DATABASE_URL: postgresql://${DB_USER}:${DB_PASSWORD}@db:5432/${DB_NAME}
-      ENVIRONMENT: production
-
-    networks:
-      - nexo_network
-
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8000/docs"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 40s
-
-  frontend:
-    build: ./frontend
-    container_name: nexo_frontend
-    ports:
-      - "3000:5173"
-
-    depends_on:
-      - backend
-
-    restart: unless-stopped
-
-    environment:
-      VITE_API_URL: http://localhost:8000
-
-    networks:
-      - nexo_network
 
   db:
     image: postgres:15-alpine
@@ -70,9 +28,53 @@ services:
       timeout: 5s
       retries: 5
 
+  backend:
+    build: ./backend
+    container_name: nexo_backend
+
+    ports:
+      - "8000:8000"
+
+    depends_on:
+      db:
+        condition: service_healthy
+
+    restart: unless-stopped
+
+    environment:
+      DATABASE_URL: postgresql://${DB_USER}:${DB_PASSWORD}@db:5432/${DB_NAME}
+      ENVIRONMENT: production
+
+    networks:
+      - nexo_network
+
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8000/docs || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  frontend:
+    build: ./frontend
+    container_name: nexo_frontend
+
+    ports:
+      - "3000:5173"
+
+    depends_on:
+      - backend
+
+    restart: unless-stopped
+
+    environment:
+      VITE_API_URL: http://localhost:8000
+
+    networks:
+      - nexo_network
+
 volumes:
   postgres_data:
-    driver: local
 
 networks:
   nexo_network:
